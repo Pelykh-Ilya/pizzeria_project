@@ -5,7 +5,7 @@ import re
 
 from pathlib import Path
 import read_save
-
+# для теста
 CUSTOMERS_PATH = Path().resolve() / 'content/customers.json'
 
 def name_validation(name: str):
