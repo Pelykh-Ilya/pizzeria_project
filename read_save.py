@@ -1,5 +1,4 @@
 import json
-from os import mkdir
 from typing import Optional
 
 from pathlib import Path
