@@ -3,18 +3,18 @@ from typing import Optional
 
 from pathlib import Path
 
+CONTENT_PATH = Path().resolve() / 'content'
 
-def read_content(path_to_file: Path) -> Optional[dict]:
+def read_content(file_name: Path) -> Optional[dict]:
+    path_to_file = CONTENT_PATH / file_name
     if path_to_file.exists():
         with path_to_file.open(mode='r') as file:
             return json.loads(file.read())
-    else:
-        Path('content').mkdir()
-        return []
 
 
-def save_content(path_to_file: Path, new_record: dict):
-    current_obj = read_content(path_to_file)
-    current_obj.append(new_record)
+def save_content(file_name: Path, content: dict):
+    if not CONTENT_PATH.exists():
+        CONTENT_PATH.mkdir()
+    path_to_file = CONTENT_PATH / file_name
     with path_to_file.open(mode='w') as customers_file_save:
-        customers_file_save.write(json.dumps(current_obj, indent=3))
+        customers_file_save.write(json.dumps(content, indent=3))

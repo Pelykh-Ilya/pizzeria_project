@@ -4,9 +4,9 @@ import math
 import re
 
 from pathlib import Path
-import read_save
+from read_save import read_content, save_content
 
-CUSTOMERS_PATH = Path().resolve() / 'content/customers.json'
+CUSTOMERS_FILE_NAME = 'customers.json'
 
 def name_validation(name: str):
     if name != '':
@@ -41,6 +41,9 @@ def generate_telegram_id():
 
 
 def main():
+    customers_content = {}
+    if content := read_content(CUSTOMERS_FILE_NAME):
+        customers_content = content
     while True:
         name = input('Введите ваше имя: ')
         if not name_validation(name):
@@ -57,19 +60,25 @@ def main():
         building_num = input('Введите ваш номер дома: ')
         if not building_validation(building_num):
             print('Несуществующий номер дома(номера от 1 до 24)')
-        new_record = {f'telegram_id: {generate_telegram_id()}': {
-            'name': f'{name_validation(name)}',
-            'internal_name': f'{name_validation(name)}',
-            'phone': f'{phone_validation(phone)}',
-            'apartament_num': apart_validation(apartament_num),
-            'building_num': building_validation(building_num),
-            'floor_num': generate_floor(apartament_num),
+        generated_id = generate_telegram_id()
+        valid_name = name_validation(name)
+        valid_phone = phone_validation(phone)
+        valid_apart = apart_validation(apartament_num)
+        valid_building = building_validation(building_num)
+        floor = generate_floor(apartament_num)
+        customers_content[generated_id] = {
+            'name': f'{valid_name}',
+            'internal_name': f'{valid_name}',
+            'phone': f'{valid_phone}',
+            'apartament_num': valid_apart,
+            'building_num': valid_building,
+            'floor_num': floor,
             'blocked': False
-
-        }}
-        read_save.save_content(path_to_file=CUSTOMERS_PATH, new_record=new_record)
+        }
+        
         answer = input('Хотите продолжить добавлять пользователей(y/n): ')
         if answer.lower() in ['n', 'no']:
+            save_content(file_name=CUSTOMERS_FILE_NAME, content=customers_content)
             break
 
 

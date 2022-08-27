@@ -1,9 +1,9 @@
 import json
 
 from pathlib import Path
-import read_save
+from read_save import read_content, save_content
 
-BUILDINGS_PATH = Path().resolve() / 'content/buildings.json'
+BUILDINGS_FILE_NAME = 'buildings.json'
 
 
 def valid_on_int(value: str):
@@ -12,6 +12,9 @@ def valid_on_int(value: str):
 
 
 def main():
+    buildings_content = {}
+    if content := read_content(BUILDINGS_FILE_NAME):
+        buildings_content = content
     while True:
         building_num = input('Введите номер дома: ')
         if not valid_on_int(building_num):
@@ -25,15 +28,19 @@ def main():
         if not valid_on_int(apartament_count):
             print('Допускаеться ввод только чисел!')
             continue
-        new_record = {
-            'building_num': valid_on_int(building_num),
-            'floor_count': valid_on_int(floor_count),
-            'apartament_count': valid_on_int(apartament_count),
+        valid_building = valid_on_int(building_num)
+        valid_floor = valid_on_int(floor_count)
+        valid_apartaments = valid_on_int(apartament_count)
+
+        buildings_content[valid_building] = {
+            'floor_count': valid_floor,
+            'apartament_count': valid_apartaments,
             'suported': True
         }
-        read_save.save_content(path_to_file=BUILDINGS_PATH, new_record=new_record)
+        
         answer = input('Хотите продолжить добавлять дома?(y/n): ')
         if answer.lower() in ['n', 'no']:
+            save_content(file_name=BUILDINGS_FILE_NAME, content=buildings_content)
             break
 
 
