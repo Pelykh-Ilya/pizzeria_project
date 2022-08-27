@@ -1,6 +1,3 @@
-import json
-
-from pathlib import Path
 from read_save import read_content, save_content
 
 BUILDINGS_FILE_NAME = 'buildings.json'

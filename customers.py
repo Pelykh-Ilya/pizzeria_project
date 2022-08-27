@@ -1,12 +1,11 @@
-import json
 import random
 import math
 import re
 
-from pathlib import Path
 from read_save import read_content, save_content
 
 CUSTOMERS_FILE_NAME = 'customers.json'
+
 
 def name_validation(name: str):
     if name != '':
