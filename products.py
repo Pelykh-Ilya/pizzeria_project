@@ -21,9 +21,9 @@ def cost_validation(cost: str):
 
 def type_validation(product_type: str):
     match(product_type):
-        case('1'): return {'weight': 'грамм'}
-        case('2'): return {'peice': 'шт'}
-        case('3'): return {'volume': 'мл'}
+        case('1'): return 'грамм'
+        case('2'): return 'шт'
+        case('3'): return 'мл'
 
 
 def size_validation(size: str):
