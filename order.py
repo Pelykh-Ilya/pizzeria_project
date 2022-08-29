@@ -14,9 +14,7 @@ def return_total_price(ordered_position_id: list):
     price = 0
     for item in ordered_position_id:
         price += product_content[item]['cost']
-    price_in_uah = price / 100
-    return price_in_uah
-
+    return price
 
 def list_of_order_product(ordered_position: list):
     order_list = []
@@ -30,12 +28,18 @@ def generate_order_id():
     return random.randint(1, 1000)
 
 
-def show_product(product_id: int):
-    return f'''
-        {product_content[f"{product_id}"]["product_name"]} цена {product_content[f"{product_id}"]["cost"]/100} грн
-        {product_content[f"{product_id}"]["description"]} {product_content[f"{product_id}"]["size"]} {product_content[f"{product_id}"]["type"]}
-    '''
-
+def show_product_menu(content: dict):
+    i = 1
+    menu = ''
+    for product_id in content.keys():
+        menu += f'''
+        {i} {product_content[product_id]["product_name"]} цена {product_content[product_id]["cost"] / 100} грн
+        {product_content[product_id]["description"]} {product_content[product_id]["size"]} {product_content[product_id]["type"]}
+       
+        '''
+        i+= 1
+    return menu
+    
 
 def main():
     while True:
@@ -53,43 +57,38 @@ def main():
             order_content = content
         order = input(f'''
             Что желаете заказать?
-            1 {show_product(397)}
-            2 {show_product(953)}  
-            3 {show_product(804)}
-            4 {show_product(515)}
-            5 {show_product(568)}
-            6 {show_product(627)}
+            {show_product_menu(product_content)}
             Ваш выбор №: 
         ''')
-        match (order):
-            case ('1'): ordered_position_id.append('397')
-            case ('2'): ordered_position_id.append('953')
-            case ('3'): ordered_position_id.append('804')
-            case ('4'): ordered_position_id.append('515')
-            case ('5'): ordered_position_id.append('568')
-            case ('6'): ordered_position_id.append('627')
-            case _: print('Такой позиции нет в меню')
+        list_of_key = list(product_content.keys())
+        if int(order) <= len(list_of_key):
+            ordered_position_id.append(list_of_key[int(order) - 1])
+        else:
+            print('Такой позиции нет в меню')
         answer = input("Желаете еще что нибудь заказать?(y/n): ")
         if answer.lower() in ['no', 'n']:
             break
+        else:
+            continue
     coment_to_order = input('Добавьте коментарий к заказу: ')
     total_price = return_total_price(ordered_position_id)
     order_in_str = list_of_order_product(ordered_position_id)
     check_order = input(f'''
         Ваш заказ: {order_in_str}
-        Общая сумма: {total_price} грн
+        Общая сумма: {total_price / 100} грн
         Адрес доставки: дом {customers_content[customers_id]["building_num"]} квартира {customers_content[customers_id]["apartament_num"]}
+        Коментарий: {coment_to_order}
         Подтверждаете(y/n): 
     ''')
     if check_order.lower() in ['yes', 'ye', 'y']:
         generated_order_id = generate_order_id()
         order_content[generated_order_id] = {
             'client': customers_content[customers_id],
-            'ordered_position': order_in_str,
+            'ordered_position': ordered_position_id,
             'comment': coment_to_order,
             'total_cost': total_price
         }
-        save_content(file_name=ORDER_FILE_NAME, content=order_content)
+    save_content(file_name=ORDER_FILE_NAME, content=order_content)
 
 
 if __name__ == '__main__':
